@@ -27,25 +27,15 @@ function dVdt = string_rate_func01(t, V, string_params)
     Uf = Uf_func(t);
     dUfdt = dUfdt_func(t);
 
-    % construct useful data structures for computation
-    m = M/n; % mass of each individual ball
-    
-    % construct K (stiffness) matrix
-    I_n = eye(n);
-    K = 2 * I_n;
-    K = K + circshift(I_n, [0, 1]) * -1;
-    K = K + circshift(I_n, [0, -1]) * -1;
-    K(1, end) = 0; % delete unwanted value in top right corner
-    K(end, 1) = 0; % delete unwanted value in bottom right corner
-    K = Tf/dx * K;
-    
-    % construct input matrix
-    B = zeros(n, 1);
-    B(end) = 1;
-    B = Tf/dx * B;
-
-    %compute acceleration
-    d2Udt2 =  1/m * (-K*U + B*Uf);
+    % compute acceleration
+    d2Udt2 = zeros(n, 1);
+    % compute acceleration for each mass
+    for i=2:n-1
+        d2Udt2(i) = Tf/dx * (U(i-1) - 2*U(i) + U(i+1)) + c/dx * (dUdt(i-1) - 2*dUdt(i) + dUdt(i+1));
+    end
+    % apply boundary conditions
+    d2Udt2(1) = Tf/dx * (-2*U(1) + U(2)) + c/dx * (-2*dUdt(1) + dUdt(2));
+    d2Udt2(end) = Tf/dx * (U(n-1) - 2*U(n) + Uf) + c/dx * (dUdt(n-1) - 2*dUdt(n) + dUfdt);
 
     %assemble state derivative
     dVdt = [dUdt; d2Udt2];
