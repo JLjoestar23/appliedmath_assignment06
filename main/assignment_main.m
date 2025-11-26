@@ -1,10 +1,10 @@
 %% Simulate Mass-String System
 
 % simulation parameters
-amplitude_Uf = 0.01; % m
-omega_Uf = pi/2; % rad/s
+amplitude_Uf = 0.05; % m
+omega_Uf = pi; % rad/s
 
-num_masses = 2;
+num_masses = 20;
 total_mass = 5; % kg
 Uf_func = @(t_in) amplitude_Uf*cos(omega_Uf*t_in);
 dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
@@ -26,5 +26,5 @@ string_params.dx = dx;
 
 % run sim
 V0 = zeros(1, num_masses*2); % initial conditions
-tspan = [0 10]; % integration period
-string_simulation_template01(string_params, V0, tspan)
+tspan = [0 30]; % integration period
+string_simulation_template01(string_params, V0, tspan, false, 'discrete-wave');
