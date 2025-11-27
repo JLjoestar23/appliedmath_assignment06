@@ -27,4 +27,4 @@ string_params.dx = dx;
 % run sim
 V0 = zeros(1, num_masses*2); % initial conditions
 tspan = [0 30]; % integration period
-string_simulation_template01(string_params, V0, tspan, false, 'discrete-wave');
+simulate_system(string_params, V0, tspan, false, 'discrete-wave');

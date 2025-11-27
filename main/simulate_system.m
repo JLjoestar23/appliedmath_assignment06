@@ -1,4 +1,4 @@
-function string_simulation_template01(string_params, V0, tspan, record_status, file_name)
+function simulate_system(string_params, V0, tspan, record_status, file_name)
     
     %load string_params into rate function
     my_rate_func = @(t_in, V_in) string_rate_func01(t_in, V_in, string_params);
