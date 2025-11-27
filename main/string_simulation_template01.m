@@ -45,7 +45,7 @@ function string_simulation_template01(string_params, V0, tspan, record_status, f
             writeVideo(myVideo, frame);
         end
 
-        pause(dt_real); % keeps playback consistent with physical time
+        pause(dt_real*.5); % keeps playback consistent with physical time
 
         cla;
 

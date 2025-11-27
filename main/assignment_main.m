@@ -2,7 +2,7 @@
 
 % simulation parameters
 amplitude_Uf = 0.05; % m
-omega_Uf = pi; % rad/s
+omega_Uf = pi/2; % rad/s
 
 num_masses = 20;
 total_mass = 5; % kg
