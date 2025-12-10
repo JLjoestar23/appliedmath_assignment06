@@ -1,4 +1,4 @@
-function simulate_system(string_params, V0, tspan, record_status, file_name)
+function simulate_system(string_params, V0, tspan, record_status, file_name, w_n)
     
     %load string_params into rate function
     my_rate_func = @(t_in, V_in) string_rate_func01(t_in, V_in, string_params);
@@ -15,7 +15,7 @@ function simulate_system(string_params, V0, tspan, record_status, file_name)
     xlabel('x (m)'); ylabel('y (m)');
 
     % adjustments in order to create a real time animation
-    fps = 60; % desired frames-per-second
+    fps = 10*w_n; % desired frames-per-second
     % uniformly spaced animation times
     t_anim = (tspan(1) : 1/fps : tspan(2)); 
     V_anim = interp1(tlist, Vlist, t_anim, 'linear'); % linear interp
@@ -36,7 +36,7 @@ function simulate_system(string_params, V0, tspan, record_status, file_name)
 
         U_edited = [0, U, string_params.Uf_func(t_anim(i))];
 
-        plot(xlist, U_edited, '.-', 'LineWidth', 2, 'MarkerSize', 20);
+        plot(xlist, U_edited, '.-', 'Color', 'k', 'MarkerEdgeColor', 'r', 'LineWidth', 2, 'MarkerSize', 20);
 
         drawnow;
 
@@ -45,7 +45,7 @@ function simulate_system(string_params, V0, tspan, record_status, file_name)
             writeVideo(myVideo, frame);
         end
 
-        pause(dt_real*.5); % keeps playback consistent with physical time
+        %pause(dt_real*.25); % keeps playback consistent with physical time
 
         cla;
 
