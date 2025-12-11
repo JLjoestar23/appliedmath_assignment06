@@ -19,7 +19,8 @@ function dVdt = string_rate_func01(t, V, string_params)
     Tf = string_params.Tf; %tension in string
     L = string_params.L; %length of string
     c = string_params.c; %damping coefficient
-    dx = string_params.dx; %horizontal spacing between masses
+    dx = L / (n-1); %horizontal spacing between masses
+    %dx = string_params.dx; %horizontal spacing between masses
 
     %unpack state variable
     U = V(1:n);
@@ -31,11 +32,12 @@ function dVdt = string_rate_func01(t, V, string_params)
     d2Udt2 = zeros(n, 1);
     % compute acceleration for each mass
     for i=2:n-1
-        d2Udt2(i) = Tf/dx * (U(i-1) - 2*U(i) + U(i+1)) + c/dx * (dUdt(i-1) - 2*dUdt(i) + dUdt(i+1));
+        d2Udt2(i) = n/M * (Tf/dx * (U(i-1) - 2*U(i) + U(i+1)) + c/dx * (dUdt(i-1) - 2*dUdt(i) + dUdt(i+1)));
     end
     % apply boundary conditions
-    d2Udt2(1) = Tf/dx * (-2*U(1) + U(2)) + c/dx * (-2*dUdt(1) + dUdt(2));
-    d2Udt2(end) = Tf/dx * (U(n-1) - 2*U(n) + Uf) + c/dx * (dUdt(n-1) - 2*dUdt(n) + dUfdt);
+    d2Udt2(1) = n/M * (Tf/dx * (-2*U(1) + U(2)) + c/dx * (-2*dUdt(1) + dUdt(2)));
+    %d2Udt2(1) = -n/M * (Tf/dx * (U(n-1) - 2*U(n) + Uf) + c/dx * (dUdt(n-1) - 2*dUdt(n) + dUfdt));
+    d2Udt2(end) = n/M * (Tf/dx * (U(n-1) - 2*U(n) + Uf) + c/dx * (dUdt(n-1) - 2*dUdt(n) + dUfdt));
 
     %assemble state derivative
     dVdt = [dUdt; d2Udt2];
