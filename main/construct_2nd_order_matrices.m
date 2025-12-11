@@ -15,12 +15,20 @@
 % M_mat: the n x n mass (inertia) matrix
 % K_mat: the n x n stiffness matrix
 function [M_mat, K_mat] = construct_2nd_order_matrices(string_params)
+    
+    n  = string_params.n;
+    M  = string_params.M;
+    Tf = string_params.Tf;
+    L = string_params.L;
+    dx = L/(n-1);
+
     % construct diagonal M matrix
-    M_mat = string_params.M / string_params.n * eye(string_params.n);
+    M_mat = (M/n) * eye(string_params.n);
     
     % construct K matrix
     I_n = eye(string_params.n);
     K_mat = 2*I_n - circshift(I_n, [0, 1]) - circshift(I_n, [0, -1]);
     K_mat(1, end) = 0; % remove unwanted 1 from top right
     K_mat(end, 1) = 0; % remove unwanted 1 from bottom left
+    K_mat = Tf/dx * K_mat;
 end
