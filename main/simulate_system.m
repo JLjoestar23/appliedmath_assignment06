@@ -1,4 +1,4 @@
-function simulate_system(string_params, V0, tspan, record_status, file_name, w_n)
+function simulate_system(string_params, V0, tspan, record_status, file_name, time_scale)
     
     %load string_params into rate function
     my_rate_func = @(t_in, V_in) string_rate_func01(t_in, V_in, string_params);
@@ -15,7 +15,7 @@ function simulate_system(string_params, V0, tspan, record_status, file_name, w_n
     xlabel('x (m)'); ylabel('y (m)');
 
     % adjustments in order to create a real time animation
-    fps = 10*w_n; % desired frames-per-second
+    fps = 10*time_scale; % desired frames-per-second
     % uniformly spaced animation times
     t_anim = (tspan(1) : 1/fps : tspan(2)); 
     V_anim = interp1(tlist, Vlist, t_anim, 'linear'); % linear interp
@@ -37,6 +37,8 @@ function simulate_system(string_params, V0, tspan, record_status, file_name, w_n
         U_edited = [0, U, string_params.Uf_func(t_anim(i))];
 
         plot(xlist, U_edited, '.-', 'Color', 'k', 'MarkerEdgeColor', 'r', 'LineWidth', 2, 'MarkerSize', 20);
+
+        grid on;
 
         drawnow;
 
