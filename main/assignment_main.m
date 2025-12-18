@@ -1,8 +1,8 @@
 function assignment_main()
-    %xperiment01();
+    experiment01();
     %experiment02();
     %experiment03();
-    experiment04();
+    %experiment04();
 end
 
 function experiment01()
@@ -12,7 +12,7 @@ function experiment01()
     amplitude_Uf = 0.025; % m
     omega_Uf = pi;
     
-    num_masses = 10;
+    num_masses = 20;
     total_mass = 0.1; % kg
     
     tension_force = 1; % N
@@ -35,7 +35,7 @@ function experiment01()
     
     [U, lambda] = eig(K, M);
     
-    omega_index = 5;
+    omega_index = 2;
     
     w_n = sqrt(lambda(omega_index,omega_index));
     
@@ -49,7 +49,7 @@ function experiment01()
     
     V0 = zeros(1, num_masses*2); % initial conditions
     tspan = [0 40*2*pi/w_n]; % integration period
-    simulate_system(string_params, V0, tspan, false, 'discrete-wave', w_n);
+    simulate_system(string_params, V0, tspan, 2*w_n, false, false, 'discrete-wave');
 end
 
 
@@ -70,7 +70,7 @@ function experiment02()
     string_params.L = string_length;
     string_params.c = damping_coeff;
     
-    w = 0.01;
+    w = 0.025;
     h = 0.25;
     Uf_func = @(t_in) b_spline_pulse(t_in, w, h);
     dUfdt_func = @(t_in) b_spline_pulse_derivative(t_in, w, h);
@@ -83,7 +83,8 @@ function experiment02()
     
     V0 = zeros(1, num_masses*2); % initial conditions
     tspan = [0 4*string_params.L/c]; % integration period
-    simulate_system(string_params, V0, tspan, true, 'colliding-wave', 15*c);
+    simulate_system(string_params, V0, tspan, 40*c, false, false, 'colliding-wave');
+
 end
 
 function experiment03()
@@ -159,7 +160,7 @@ function experiment04()
     
     wn_idx = 1;   % resonant freq idx
     
-    for n = 1:1000
+    for n = 1:200
         num_masses = n;
         total_mass = 0.1; % kg
         tension_force = 10; % N
@@ -190,7 +191,7 @@ function experiment04()
         err(n) = abs(wn_analytical - wn_numerical);
     end
     
-    semilogy(1:1000, err, '.', 'MarkerSize', 10);
+    semilogy(1:n, err, '.', 'MarkerSize', 10);
     xlabel('Number of Masses');
     ylabel('Absolute Error');
     title('Numerical Error of Mode 1 Natural Frequency');
