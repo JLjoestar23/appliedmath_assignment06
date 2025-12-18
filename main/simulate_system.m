@@ -1,4 +1,10 @@
-function simulate_system(string_params, V0, tspan, record_status, file_name, time_scale)
+function simulate_system(string_params, V0, tspan, time_scale, show_wave, record_status, file_name)
+
+    string_length = string_params.L;
+    total_mass = string_params.M;
+    tension_force = string_params.Tf
+    rho = total_mass/string_length;
+    c = sqrt(tension_force / rho);
     
     %load string_params into rate function
     my_rate_func = @(t_in, V_in) string_rate_func01(t_in, V_in, string_params);
@@ -28,6 +34,13 @@ function simulate_system(string_params, V0, tspan, record_status, file_name, tim
         open(myVideo)
     end
 
+    
+    
+    grid on;
+    hold on
+    wave_plot = plot(0,0, '.-', 'Color', 'k', 'MarkerEdgeColor', 'r', 'LineWidth', 2, 'MarkerSize', 20);
+    wave_indicator = plot(0,0,'k','LineWidth',2)
+
     for i = 1:length(t_anim)
         title(sprintf('Mass-String System (t = %.2f s)', t_anim(i)));
 
@@ -36,9 +49,17 @@ function simulate_system(string_params, V0, tspan, record_status, file_name, tim
 
         U_edited = [0, U, string_params.Uf_func(t_anim(i))];
 
-        plot(xlist, U_edited, '.-', 'Color', 'k', 'MarkerEdgeColor', 'r', 'LineWidth', 2, 'MarkerSize', 20);
+        set(wave_plot,'xdata',xlist,'ydata', U_edited);
+        
+        x = string_length-c*t_anim(i);
+        x = mod(x,2*string_length);
+        if x > string_length
+            x = 2*string_length - x;
+        end
 
-        grid on;
+        if show_wave == true
+            set(wave_indicator,'xdata',[x,x],'ydata',[-5.,.5])
+        end
 
         drawnow;
 
@@ -49,7 +70,7 @@ function simulate_system(string_params, V0, tspan, record_status, file_name, tim
 
         %pause(dt_real*.25); % keeps playback consistent with physical time
 
-        cla;
+        % cla;
 
     end
 
